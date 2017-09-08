@@ -22,13 +22,25 @@ sigma = 0.3;
 %  Note: You can compute the prediction error using 
 %        mean(double(predictions ~= yval))
 %
+min_error = 0;
+min_C = 0.01;
+min_sigma = 0.01;
 
+for C = [0.01 0.03 0.1 0.3 1 3 10 30]
+    for sigma = [0.01 0.03 0.1 0.3 1 3 10 30]
+        model = svmTrain(X, y, C, @linearKernel, 1e-3, 20);
+        predictions = svmPredict(model, Xval);
+        error_ = mean(double(predictions ~= yval));
+        if (error_ < min_error)
+            min_C = C;
+            min_sigma = sigma;
+            min_error = error_;
+        end
+    end
+end
 
-
-
-
-
-
+sigma = min_sigma;
+C = min_C;
 % =========================================================================
 
 end
